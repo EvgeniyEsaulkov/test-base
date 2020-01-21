@@ -4,58 +4,52 @@ describe Objective do
   describe "#locked?" do
     subject(:objective) do
       objective = described_class.new
-      objective.assign_attributes(locked_by: "Joe Dow", lock_status: 2)
+      objective.assign_attributes(locked_by: "Joe Dow", lock_status: Objective::LOCK_STATUSES[:locked])
       objective
     end
 
-    describe "when locked_by is present" do
-      describe "when lock status is locked" do # rubocop: disable RSpec/NestedGroups
-        it "returns true" do
-          expect(objective.locked?).to be_truthy
-        end
+    context "when locked_by is present" do
+      context "when lock status is locked" do # rubocop: disable RSpec/NestedGroups
+        it { is_expected.to be_locked }
       end
 
-      describe "when lock status is unlocked" do # rubocop: disable RSpec/NestedGroups
+      context "when lock status is unlocked" do # rubocop: disable RSpec/NestedGroups
         before do
-          objective.lock_status = 0
+          objective.lock_status =  Objective::LOCK_STATUSES[:unlocked]
         end
 
-        it "returns false" do
-          expect(objective.locked?).to be_falsey
-        end
+        it { is_expected.not_to be_locked }
       end
 
-      describe "when lock status is uploading" do # rubocop: disable RSpec/NestedGroups
+      context "when lock status is uploading" do # rubocop: disable RSpec/NestedGroups
         before do
-          objective.lock_status = 1
+          objective.lock_status =  Objective::LOCK_STATUSES[:uploading]
         end
 
-        it "returns true" do
-          expect(objective.locked?).to be_truthy
-        end
+        it { is_expected.to be_locked }
       end
     end
 
-    describe "when locked_by is not present" do
+    context "when locked_by is not present" do
       before do
         objective.locked_by = nil
       end
 
-      it "returns false" do
-        expect(objective.locked?).to be_falsey
-      end
+      it { is_expected.not_to be_locked }
     end
   end
 
   describe "#release_lock" do
     subject(:objective) do
       obj = described_class.new
-      obj.assign_attributes(locked_by: "Joe Dow", locked_on_name: "FooBar", locked_on_id: 1234, lock_status: 2)
+      obj.assign_attributes(locked_by: "Joe Dow", locked_on_name: "FooBar", locked_on_id: 1234,
+                            lock_status:  Objective::LOCK_STATUSES[:locked])
       obj
     end
 
     it "set lock status to unlocked" do
-      expect { objective.release_lock }.to change { objective.lock_status }.from(2).to(0)
+      expect { objective.release_lock }.to change { objective.lock_status }
+        .from(Objective::LOCK_STATUSES[:locked]).to(Objective::LOCK_STATUSES[:unlocked])
     end
 
     it "nullifies all locked_* attributes" do
