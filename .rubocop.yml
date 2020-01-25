@@ -78,3 +78,7 @@ Lint/EndAlignment:
   SupportedStylesAlignWith:
     - keyword
     - variable
+
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - "spec/**/*"
