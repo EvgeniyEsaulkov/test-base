@@ -1,17 +1,16 @@
 require "rails_helper"
 
 describe FindingAction do
-  subject(:finding_action) { described_class.new(creator: creator) }
+  subject(:finding_action) { create(:finding_action) }
 
-  let(:creator) { create(:user) }
-  let(:updater) { create(:user) }
+  let(:updater) { build_stubbed(:user) }
 
   describe "#notify_creator" do
     context "when notifier is creator" do
       it "doesn't send notification" do
         expect(FindingActionNotifier).not_to receive(:send_creator_notification)
 
-        finding_action.notify_creator(creator)
+        finding_action.notify_creator(finding_action.creator)
       end
     end
 
