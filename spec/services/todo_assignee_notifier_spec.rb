@@ -4,12 +4,17 @@ describe TodoAssigneeNotifier do
   describe ".notify" do
     subject(:notify) { described_class.notify(todo) }
 
-    let(:todo) { create(:todo) }
+    let(:todo) { instance_double("Todo") }
+    let(:executor) { instance_double("User") }
+
+    before do
+      allow(todo).to_receive(:executor).and_return(executor)
+    end
 
     context "when executor has notify permission" do
       before do
         allow(NotificationManager).to receive(:allows_notifying_membership)
-          .with(todo.executor).and_return(true)
+          .with(executor).and_return(true)
       end
 
       it "sends email notification" do
@@ -22,7 +27,7 @@ describe TodoAssigneeNotifier do
     context "when executor hasn't notify permission" do
       before do
         allow(NotificationManager).to receive(:allows_notifying_membership)
-          .with(todo.executor).and_return(false)
+          .with(executor).and_return(false)
       end
 
       it "doesn't send email notification" do

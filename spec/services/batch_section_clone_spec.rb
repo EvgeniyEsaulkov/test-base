@@ -5,7 +5,8 @@ describe BatchSectionClone do
     subject(:batch_clone) { described_class.clone(sections, target) }
 
     let(:section_clone_service) { instance_double("SectionClone") }
-    let(:sections) { create_list(:section, 3) }
+    let(:section) { instance_double("Section") }
+    let(:sections) { Array.new(3, section) }
     let(:target) { create(:target) }
 
     before do
