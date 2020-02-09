@@ -12,7 +12,7 @@ describe Api::V1::ExceptionsController do
 
     context "when admin" do
       before do
-        allow(project).to receive(:exceptions).and_return(ActiveRecordRelationStub.new(Exception, all_exceptions))
+        allow(project).to receive(:exceptions).and_return(all_exceptions)
         allow(current_user).to receive(:admin?).and_return(true)
       end
 
