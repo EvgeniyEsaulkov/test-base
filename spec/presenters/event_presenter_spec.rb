@@ -2,34 +2,16 @@ require "rails_helper"
 
 describe EventPresenter do
   describe "#date" do
-    subject(:presenter_date) { described_class.new(event).date }
-
-    context "when the event should happen today" do
-      let(:event) { instance_double("Event", date: Date.today) }
-
-      it { is_expected.to eq("Today") }
+    def presenter_date(date)
+      event = instance_double("Event", date: date)
+      described_class.new(event).date
     end
-
-    context "when the event was supposed to happen yesterday" do
-      let(:event) { instance_double("Event", date: Date.yesterday) }
-
-      it { is_expected.to eq("Yesterday") }
-    end
-
-    context "when the event was supposed to happen before yesterday" do
-      let(:event) { instance_double("Event", date: event_date) }
-      let(:event_date) { 2.days.ago.to_date }
-      let(:date_string) { event_date.to_s }
-
-      it { is_expected.to eq(date_string) }
-    end
-
-    context "when the event should happen in the future" do
-      let(:event) { instance_double("Event", date: event_date) }
-      let(:event_date) { Date.tomorrow }
-      let(:date_string) { event_date.to_s }
-
-      it { is_expected.to eq(date_string) }
+    
+    it "returns correct date" do
+      expect(presenter_date(Date.today)).to eql("Today")
+      expect(presenter_date(Date.yesterday)).to eql("Yesterday")      
+      expect(presenter_date(2.days.ago.to_date)).to eql(2.days.ago.to_date.to_s)      
+      expect(presenter_date(Date.tomorrow)).to eql(Date.tomorrow.to_s)      
     end
   end
 end
