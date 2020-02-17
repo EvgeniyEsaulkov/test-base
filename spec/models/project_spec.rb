@@ -4,29 +4,18 @@ describe Project do
   describe "#completion_percentage=" do
     MIN_PERCENTAGE = 0
     MAX_PERCENTAGE = 100
-
-    let(:project) { described_class.new }
-
-    subject(:completion_percentage) { project.completion_percentage }
-
-    before { project.completion_percentage = assigned_value }
-
-    context "when assigned valued is negative" do
-      let(:assigned_value) { -1 }
-
-      it { is_expected.to eq(MIN_PERCENTAGE) }
+    
+    def completion_percentage(percentage)
+      project = described_class.new
+      project.completion_percentage = percentage
+      project.completion_percentage
     end
-
-    context "when assigned value is more than max allowed value" do
-      let(:assigned_value) { 101 }
-
-      it { is_expected.to eq(MAX_PERCENTAGE) }
-    end
-
-    context "when assigned value is between allowed values" do
-      let(:assigned_value) { rand(101) }
-
-      it { is_expected.to eq(assigned_value) }
+    
+    it "calculates values between 0 and 100" do
+      expect(completion_percentage(-1)).to eql(0)
+      expect(completion_percentage(0)).to eql(0)
+      expect(completion_percentage(100)).to eql(100)
+      expect(completion_percentage(101)).to eql(100)      
     end
   end
 end
